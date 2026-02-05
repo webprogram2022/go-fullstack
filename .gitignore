@@ -1,0 +1,15 @@
+# Env file
+.env
+
+# Build binary
+app
+*.exe
+
+# Vendor
+/vendor/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store

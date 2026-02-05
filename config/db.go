@@ -2,7 +2,9 @@ package config
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -12,14 +14,23 @@ var DB *sql.DB
 func ConnectDB() {
 	var err error
 
-	DB, err = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/go_fullstack")
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=true&loc=Local",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"),
+	)
+
+	DB, err = sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = DB.Ping()
-	if err != nil {
-		log.Fatal("Database not connected")
+	// Test connection
+	if err = DB.Ping(); err != nil {
+		log.Fatal("Database not connected: ", err)
 	}
 
 	log.Println("Database connected!")
